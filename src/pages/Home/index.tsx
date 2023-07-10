@@ -21,6 +21,7 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
 }
 
 const newCycleFormSchema = zod.object({
@@ -58,6 +59,15 @@ export function Home() {
   }
 
   function handleInterruptCycle() {
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycle?.id) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
     setActiveCycleId(null)
   }
 
@@ -138,7 +148,7 @@ export function Home() {
         </CountdownContainer>
 
         {activeCycle ? (
-          <StopCountdownButton type="button">
+          <StopCountdownButton onClick={handleInterruptCycle} type="button">
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>
